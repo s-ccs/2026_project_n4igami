@@ -3,9 +3,12 @@ using WGLMakie, UnfoldMakie # plotting
 using Revise
 
 includet("../src/io_eeglab.jl")
-filepath = "/Users/saramilligan/WTS/DC_modeling/output_deconvolution/high_constraint_WTS/continuous_processed_datasets_beg/UF_WTS032_ICA_eyesort_ia_processed.set"
-filepath = "/Volumes/cas/PSY Schotter Lab/Experiments/WhatTheSpell/WTS_deconv/output_deconvolution/high_constraint_WTS/UF_modified_datasets_WTS/UF_WTS011_ICA_eyesort_ia_processed.set"
+datasetFolder = "/Users/saramilligan/WTS/DC_modeling/output_deconvolution/high_constraint_WTS/continuous_processed_datasets";
+datasetFiles = dir(fullfile(datasetFolder, '*.set')); % Get all .set files
+numDatasets = length(datasetFiles);
 
+filepath = "/Users/saramilligan/WTS/output_deconvolution/UF_modified_datasets_WTS/UF_WTS122_ICA_eyesort_ia_processed.set"
+filepath = "/Volumes/cas/PSY Schotter Lab/Experiments/WhatTheSpell/WTS_deconv/output_deconvolution/high_constraint_WTS/UF_modified_datasets_WTS/UF_WTS122_ICA_eyesort_ia_processed.set"
 
 
 data, evts, eeg_dict = import_eeglab(filepath)
@@ -39,7 +42,8 @@ design_epoch = [
     "R_fixation" => (@formula(0 ~ 1 + PT_plausibility*fix_type),times),
     "onset" => (@formula(0 ~ 1),times)
 ]
-ch_ix = 16
+ch_ix = [16, 29]
+
 m_epoch = fit(UnfoldModel,design_epoch,evts_clean,data_epoch[ch_ix,:,:];eventcolumn=:type)
 
 #m = fit(UnfoldModel, @formula(0~1),evts,data[16,:],firbasis([-0.2,0.8],500))
@@ -49,6 +53,7 @@ m_epoch = fit(UnfoldModel,design_epoch,evts_clean,data_epoch[ch_ix,:,:];eventcol
 m2 = fit(UnfoldModel, design,evts_clean,data[ch_ix,:];eventcolumn=:type)
 #c2 = coef(m2)
 #co2 = coeftable(m2)
+
 
 
 #plot_erp(co)
