@@ -33,11 +33,11 @@ for i in 1:numDatasets
 
     #evts_clean[evts_clean.fix_type .=="Beginning","type"] .= "other_fixation"
     design = [
-    "onset" => (@formula(0 ~ 1),firbasis([-0.2,1.5],500)),
-    "Beginning" => (@formula(0 ~ 1),firbasis([-0.2,1],500)),
-    "Pretarget" => (@formula(0 ~ 1 + PT_plausibility*T_plausibility),firbasis([-0.2,1],500)),
-    "Target" => (@formula(0 ~ 1 + PT_plausibility*T_plausibility),firbasis([-0.2,1],500)),
-    "Ending" => (@formula(0 ~ 1 + PT_plausibility*T_plausibility),firbasis([-0.2,1],500))
+        "onset" => (@formula(0 ~ 1),firbasis([-0.2,1.5],500)),
+        "Beginning" => (@formula(0 ~ 1),firbasis([-0.2,1],500)),
+        "Pretarget" => (@formula(0 ~ 1 + PT_plausibility*T_plausibility),firbasis([-0.2,1],500)),
+        "Target" => (@formula(0 ~ 1 + PT_plausibility*T_plausibility),firbasis([-0.2,1],500)),
+        "Ending" => (@formula(0 ~ 1 + PT_plausibility*T_plausibility),firbasis([-0.2,1],500))
     ]
 
     data_epoch,times=Unfold.epoch(;data=data,evts=evts_clean,τ=(-0.2,0.8),sfreq=500)
