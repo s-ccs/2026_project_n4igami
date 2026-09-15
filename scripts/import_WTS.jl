@@ -13,9 +13,6 @@ setName_list = [SubString(basename(f), 4, 9) for f in datasetFiles]  # subject I
 save_path_dc = raw"/Users/saramilligan/N4igami/WTS_model_output/deconv"
 save_path_epoch = raw"/Users/saramilligan/N4igami/WTS_model_output/epoch"
 
-#filepath = "/Users/saramilligan/WTS/DC_modeling/output_deconvolution/high_constraint_WTS/continuous_processed_datasets/UF_WTS122_ICA_eyesort_ia_processed.set"
-#filepath = "/Volumes/cas/PSY Schotter Lab/Experiments/WhatTheSpell/WTS_deconv/output_deconvolution/high_constraint_WTS/UF_modified_datasets_WTS/UF_WTS122_ICA_eyesort_ia_processed.set"
-#data, evts, eeg_dict = import_eeglab(filepath)
 for i in 1:numDatasets
     setName = SubString(basename(datasetFiles[i]), 4, 9)  # subject ID is the 4th to 9th characters of the filename
     println("Processing dataset $i of $numDatasets: $setName")
@@ -54,12 +51,8 @@ for i in 1:numDatasets
         "Ending" => (@formula(0 ~ 1 + PT_plausibility*T_plausibility),times)
     ]
     
-    ch_ix = [16, 29]
-
-
-    #m = fit(UnfoldModel, @formula(0~1),evts,data[16,:],firbasis([-0.2,0.8],500))
-    #c = coef(m)
-    #co = coeftable(m)
+    ch_ix = [15, 16, 17, 20, 21, 24, 25, 26, 28, 29, 30]
+    #frontal: 4, 5, 6, 10, 11
 
     println("Unfolding dataset $i of $numDatasets: $setName")
 
