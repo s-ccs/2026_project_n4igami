@@ -1,12 +1,16 @@
 using Unfold
 using WGLMakie, UnfoldMakie # plotting
 using Revise
+using JLD2
+using FileIO
 
 includet("../src/io_eeglab.jl")
 #datasetFolder = "/Users/saramilligan/WTS/DC_modeling/output_deconvolution/high_constraint_WTS/continuous_processed_datasets"
 datasetFolder = "/Volumes/cas/PSY Schotter Lab/Experiments/WhatTheSpell/WTS_deconv/output_deconvolution/high_constraint_WTS/UF_modified_datasets_WTS/"
 datasetFiles = filter(contains(r".*\.set"),readdir(abspath(datasetFolder), join=true))
 numDatasets = length(datasetFiles)
+setName_list = [SubString(basename(f), 4, 9) for f in datasetFiles]  # subject ID is the 4th to 9th characters of the filename
+outputFolder = raw"/Volumes/cas/PSY Schotter Lab/Experiments/N4igami/WTS_effects_output/"
 
 #filepath = "/Users/saramilligan/WTS/DC_modeling/output_deconvolution/high_constraint_WTS/continuous_processed_datasets/UF_WTS122_ICA_eyesort_ia_processed.set"
 #filepath = "/Volumes/cas/PSY Schotter Lab/Experiments/WhatTheSpell/WTS_deconv/output_deconvolution/high_constraint_WTS/UF_modified_datasets_WTS/UF_WTS122_ICA_eyesort_ia_processed.set"
@@ -16,7 +20,7 @@ for i in 1:numDatasets
     println("Processing dataset $i of $numDatasets: $setName")
     data, evts, eeg_dict = import_eeglab(datasetFiles[i])
     # Further processing can be done here for each dataset
-    eff_save_name = setName * "_effects.jld2"  # name of output effects file
+    eff_save_name = outputFolder * setName * raw"_effects.jld2"  # name of output effects file
 
     remove_onset = []
     onset_active = false
@@ -56,11 +60,15 @@ for i in 1:numDatasets
     #c = coef(m)
     #co = coeftable(m)
 
+    println("Unfolding dataset $i of $numDatasets: $setName")
+
     m_dc = fit(UnfoldModel, design,evts_clean,data[ch_ix,:];eventcolumn=:fix_type)
     c_dc = coef(m_dc)
     co_dc = coeftable(m_dc)
     #c2 = coef(m2)
     #co2 = coeftable(m2)
+
+    println("Modeling epoched dataset $i of $numDatasets: $setName")
 
     m_epoch = fit(UnfoldModel,design_epoch,evts_clean,data_epoch[ch_ix,:,:];eventcolumn=:fix_type)
     c_epoch = coef(m_epoch)
@@ -70,6 +78,8 @@ for i in 1:numDatasets
     #plot_erp(co2)
     #plot_erp(co2,mapping=(;col=:eventname),legend=(;position=:bottom,orientation=:horizontal))
     
+    println("Converting model output to effect coded estimates for $i of $numDatasets: $setName")
+
     _eff_dc = effects(Dict(:PT_plausibility=>["A","P"],:T_plausibility=>["A","P"]),m_dc)
     eff_dc = subset(_eff_dc,:eventname =>  x -> x .!=["onset"])
     #plot_erp(eff,mapping=(;color=:PT_plausibility,col=:fix_type))
@@ -81,9 +91,14 @@ for i in 1:numDatasets
     eff_dc.group .= "deconv"
     eff_epoch.group .= "epoch"
     eff_all = vcat(eff_dc,eff_epoch)
+    eff_all.subject .= setName
+
+    println("Plotting model results for $i of $numDatasets: $setName")
     plot_erp(eff_all,mapping=(;color=:PT_plausibility,row=:T_plausibility,col=:group=>UnfoldMakie.AlgebraOfGraphics.sorter(["epoch","deconv"])))
-    save(eff_save_name, eff_all; compress=true)
+    
     println("Saving $eff_save_name")
+    jldsave("eff_save_name", "eff_all"; compress=true)
+    
 end
 
 #eff_all_onset = eff_all
