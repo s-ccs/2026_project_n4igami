@@ -10,7 +10,8 @@ datasetFolder = "/Volumes/cas/PSY Schotter Lab/Experiments/WhatTheSpell/WTS_deco
 datasetFiles = filter(contains(r".*\.set"),readdir(abspath(datasetFolder), join=true))
 numDatasets = length(datasetFiles)
 setName_list = [SubString(basename(f), 4, 9) for f in datasetFiles]  # subject ID is the 4th to 9th characters of the filename
-outputFolder = raw"/Volumes/cas/PSY Schotter Lab/Experiments/N4igami/WTS_effects_output/"
+save_path_dc = raw"/Users/saramilligan/N4igami/WTS_model_output/deconv"
+save_path_epoch = raw"/Users/saramilligan/N4igami/WTS_model_output/epoch"
 
 #filepath = "/Users/saramilligan/WTS/DC_modeling/output_deconvolution/high_constraint_WTS/continuous_processed_datasets/UF_WTS122_ICA_eyesort_ia_processed.set"
 #filepath = "/Volumes/cas/PSY Schotter Lab/Experiments/WhatTheSpell/WTS_deconv/output_deconvolution/high_constraint_WTS/UF_modified_datasets_WTS/UF_WTS122_ICA_eyesort_ia_processed.set"
@@ -44,7 +45,7 @@ for i in 1:numDatasets
         "Ending" => (@formula(0 ~ 1 + PT_plausibility*T_plausibility),firbasis([-0.2,1],500))
     ]
 
-    data_epoch,times=Unfold.epoch(;data=data,evts=evts_clean,τ=(-0.2,0.8),sfreq=500)
+    data_epoch,times=Unfold.epoch(;data=data,evts=evts_clean,τ=(-0.2,1),sfreq=500)
     design_epoch = [
         "onset" => (@formula(0 ~ 1),times),
         "Beginning" => (@formula(0 ~ 1),times),
@@ -96,8 +97,11 @@ for i in 1:numDatasets
     println("Plotting model results for $i of $numDatasets: $setName")
     plot_erp(eff_all,mapping=(;color=:PT_plausibility,row=:T_plausibility,col=:group=>UnfoldMakie.AlgebraOfGraphics.sorter(["epoch","deconv"])))
     
-    println("Saving $eff_save_name")
-    jldsave("eff_save_name", "eff_all"; compress=true)
+    println("Saving $setName deconvolution model results")
+    save(joinpath(save_path_dc, setName * "_dc_model.jld2"), m_dc; compress = true);
+
+    println("Saving $setName epoch model results")
+    save(joinpath(save_path_epoch, setName * "_epoch_model.jld2"), m_epoch; compress = true);
     
 end
 

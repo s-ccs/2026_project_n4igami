@@ -2,8 +2,11 @@ using Unfold
 using WGLMakie, UnfoldMakie # plotting
 using Revise
 using TidierData
-
 includet("../src/io_eeglab.jl")
+
+datasetFolder = "/Users/saramilligan/N4igami/RLGL_cont_data/";
+datasetFiles = dir(fullfile(datasetFolder, '*.set')); % Get all .set files
+numDatasets = length(datasetFiles);
 filepath = "/Users/saramilligan/N4igami/RLGL_cont_data/RLGL033_BPF_AR_processed.set"
 
 data, evts, eeg_dict = import_eeglab(filepath)
@@ -30,11 +33,11 @@ evts_clean = evts[Not(remove_onset),:]=#
 
 #evts_clean[evts_clean.fix_type .=="Beginning","type"] .= "other_fixation"
 design = [
-    "Beginning" => (@formula(0 ~ 1),firbasis([-0.2,0.8],500)),
-    "PreTarget" => (@formula(0 ~ 1 + bdf_condition_description * bdf_label_description + Sac_amp_in + Sac_amp_out),firbasis([-0.2,0.8],500)),
-    "Target_word" => (@formula(0 ~ 1 + bdf_condition_description + Sac_amp_in + Sac_amp_out),firbasis([-0.2,0.8],500)),
-    "Ending" => (@formula(0 ~ 1 + bdf_condition_description + Sac_amp_in + Sac_amp_out),firbasis([-0.2,0.8],500)),
     "onset" => (@formula(0 ~ 1),firbasis([-0.2,1.5],500))
+    "Beginning" => (@formula(0 ~ 1),firbasis([-0.2,1],500)),
+    "PreTarget" => (@formula(0 ~ 1 + bdf_condition_description * bdf_label_description + Sac_amp_in + Sac_amp_out),firbasis([-0.2,1],500)),
+    "Target_word" => (@formula(0 ~ 1 + bdf_condition_description + Sac_amp_in + Sac_amp_out),firbasis([-0.2,1],500)),
+    "Ending" => (@formula(0 ~ 1 + bdf_condition_description + Sac_amp_in + Sac_amp_out),firbasis([-0.2,1],500))
 ]
 
 #"PreTarget" => (@formula(0 ~ 1 + bdf_condition_description * bdf_label_description + Sac_amp_in + Sac_amp_out),firbasis([-0.2,0.8],500)),
@@ -59,9 +62,9 @@ m_epoch = fit(UnfoldModel,design_epoch,_evts,data_epoch[ch_ix,:,:];eventcolumn=:
 #c = coef(m)
 #co = coeftable(m)
 
-m_dc = fit(UnfoldModel, design,_evts,data[ch_ix,:];eventcolumn=:type)
+m_dc = fit(UnfoldModel, design,_evts, data[ch_ix,:];eventcolumn=:type)
 
-save("test.jld2",m_dc;compress=true)
+save("test.jld2", m_dc; compress=true)
 c_dc = coef(m_dc)
 co_dc = coeftable(m_dc)
 

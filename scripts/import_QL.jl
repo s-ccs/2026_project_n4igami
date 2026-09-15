@@ -8,8 +8,6 @@ filepath = "/Users/saramilligan/QL_processing/EEG_files/EyeSorted/QLF102_ICA_cle
 
 data, evts, eeg_dict = import_eeglab(filepath)
 
-
-
 remove_onset = []
 onset_active = false
 for (idx,e) in reverse(collect(enumerate(evts.type)))

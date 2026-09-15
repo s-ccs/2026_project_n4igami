@@ -2,7 +2,7 @@
 
 julia_version = "1.12.7"
 manifest_format = "2.0"
-project_hash = "e4bc8729017d29a832ff40b44c151e26bf3fa768"
+project_hash = "7a66896218bf1131e75489149824a112f1a34d62"
 
 [[deps.ADTypes]]
 deps = ["PrecompileTools"]
@@ -482,6 +482,11 @@ weakdeps = ["Dates", "LinearAlgebra"]
 
     [deps.Compat.extensions]
     CompatLinearAlgebraExt = "LinearAlgebra"
+
+[[deps.Compiler]]
+git-tree-sha1 = "382d79bfe72a406294faca39ef0c3cef6e6ce1f1"
+uuid = "807dbc54-b67e-4c79-8afb-eafe4df6f2e1"
+version = "0.1.1"
 
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
@@ -1349,6 +1354,12 @@ git-tree-sha1 = "037babc10853eeb8e585418922246cb97b8e5b74"
 uuid = "aacddb02-875f-59d6-b918-886e6ef4fbf8"
 version = "3.2.0+1"
 
+[[deps.JuliaInterpreter]]
+deps = ["CodeTracking", "InteractiveUtils", "Random", "UUIDs"]
+git-tree-sha1 = "c3d401f110454b4ea24a76be33f6ee0d7d385103"
+uuid = "aa1ae85d-cabe-5617-a682-6adf51b2e16a"
+version = "0.11.4"
+
 [[deps.JuliaSyntaxHighlighting]]
 deps = ["StyledStrings"]
 uuid = "ac6e5ff7-fb65-4e79-a425-ec3bc9c03011"
@@ -1528,6 +1539,12 @@ version = "0.3.29"
 [[deps.Logging]]
 uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
 version = "1.11.0"
+
+[[deps.LoweredCodeUtils]]
+deps = ["CodeTracking", "Compiler", "JuliaInterpreter"]
+git-tree-sha1 = "1d4c737ab26f51ceed52ab2019c09b7660eb7440"
+uuid = "6f1432cf-f94c-5a45-995e-cdbf5db27b0b"
+version = "3.8.0"
 
 [[deps.Lz4_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
@@ -2190,6 +2207,16 @@ deps = ["NetworkOptions", "OpenSSL_jll", "PrecompileTools", "Random", "SHA"]
 git-tree-sha1 = "aaee74fab545e9af4b21d10c2203c93c636c4ae0"
 uuid = "802f3686-a58f-41ce-bb0c-3c43c75bba36"
 version = "1.4.1"
+
+[[deps.Revise]]
+deps = ["CRC32c", "CodeTracking", "FileWatching", "JuliaInterpreter", "LibGit2", "LoweredCodeUtils", "OrderedCollections", "Preferences", "REPL", "UUIDs"]
+git-tree-sha1 = "ab0f5630e37968bc49b8c4cedd3279a7d30b9486"
+uuid = "295af30f-e4ad-537b-8983-00126c2a3abe"
+version = "3.17.0"
+weakdeps = ["Distributed"]
+
+    [deps.Revise.extensions]
+    DistributedExt = "Distributed"
 
 [[deps.Rmath]]
 deps = ["Random", "Rmath_jll"]
